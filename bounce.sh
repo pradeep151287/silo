@@ -3,14 +3,14 @@
 ##                Author: Pavan                                         ##
 ##                Date: 15/11/2017                                      ##
 ##########################################################################
-#!/bin/bash 
+#!/bin/bash
 
 # Color code variable set
 RED='\033[0;31m'
 NC='\033[0m'
 GREEN='\033[0;32m'
 SCOUNT=0
-CSV_FILE="silo_env_info.csv"
+CSV_FILE="../silo_env_info.csv"
 
 server_list_fun()
 {
@@ -76,10 +76,10 @@ bounce_instance()
 {
 
 HNAME=$1
-# calling health check function 
+# calling health check function
 #healthcheck $HNAME
 
-ssh $1 
+ssh $1
 
 }
 
@@ -121,17 +121,17 @@ role base count: $COUNT"
 
 if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] && [[  -z "$COUNT_VAR" ]]
       then
-       # calling server_list_fun 
-	server_list_fun $SILO	
+       # calling server_list_fun
+	server_list_fun $SILO
 
 	if [ -z "$s_list" ]
-	then 	
+	then
 		echo "SILO not Found"
 		exit
 	fi
 
         echo "Bouncing below instance"
-	echo "${s_list[*]}"	
+	echo "${s_list[*]}"
 	s_list_new=${s_list[*]}
 
         for i in $(echo $s_list_new| sed "s/|/ /g")
@@ -153,7 +153,7 @@ elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ -z "$ALL" ]] && [[ ! -z "$COUN
 
                 done
 
-elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "ALL" ]] && [[ ! -z "COUNT_VAR" ]] 
+elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "ALL" ]] && [[ ! -z "COUNT_VAR" ]]
       then
                       echo "Both -a and -r cannot be used at a time "
                       usage
@@ -161,5 +161,5 @@ elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "ALL" ]] && [[ ! -z "COUN
 else
                       echo "Wrong parameters passed : please refer the Usage"
                       usage
-		      exit	
+		      exit
 fi
