@@ -76,10 +76,11 @@ bounce_instance()
 {
 
 HNAME=$1
+BBW=$2
 # calling health check function
 #healthcheck $HNAME
-
-ssh $1
+echo "Grepping $BBW process in $HNAME"
+echo "ssh $HNAME "ps -eo pid,user,args --sort user | grep $BBW | grep bwengine | awk '{ print $1" "$7 }' | cut -d'/' -s '-f1,8,9' | tr '/' ' ' | sed -e "s/-/ /" -e "s/-/ /" | tr -s " ""
 
 }
 
@@ -136,8 +137,10 @@ if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] && [[  -z "$COUNT
 
         for i in $(echo $s_list_new| sed "s/|/ /g")
                 do
-                        #bounce_allinstance($i)
+                        echo "======================================================"
+                        bounce_instance $i $BW
                         echo -e "server name : $i"
+                        echo "======================================================"
                 done
 
 
