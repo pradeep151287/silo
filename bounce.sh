@@ -86,13 +86,23 @@ bounce_instance()
 HNAME=$1
 BBW=$2
 # calling health check function
+echo "======================================================"
+echo "health check of the Host"
+echo "======================================================"
+
 healthcheck $HNAME
+
+echo "if Hawk agent running then continue else exit the function "
+echo -e  "\n"
+echo "======================================================"
+
 echo "Grepping $BBW process in $HNAME"
 echo ""ssh $HNAME "ps -eo pid,user,args --sort user | grep $BBW | grep bwengine | awk '{ print \\$1" "\\$7 }' | cut -d'/' -s '-f1,8,9' | tr '/' ' ' | sed -e "s/-/ /" -e "s/-/ /" | tr -s " ""
 echo "killing BW process : kill -9 \$PID"
 echo "ssh $HNAME "kill -9 \$PID""
 echo "\$? based on the exit value of previous command display success message"
-
+sleep 5 
+echo "do post health verification with dupcheck "
 
 }
 
@@ -128,11 +138,12 @@ while getopts "s:b:r:ah" o; do
 done
 echo -e " silo name : $SILO
 BW name: $BW
-role base count: $COUNT"
+role base count: $COUNT_VAR
+ALL: $ALL"
 
 
-
-if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] && [[  -z "$COUNT_VAR" ]]
+echo "checking condition for all instance"
+if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] 
       then
        # calling server_list_fun
 	server_list_fun $SILO
@@ -157,14 +168,18 @@ if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] && [[  -z "$COUNT
                 done
 
 
+echo "checking role based condition"
 
 
 elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ -z "$ALL" ]] && [[ ! -z "$COUNT_VAR" ]]
       then
 
-                for i in $(echo $server_list| sed "s/,/ /g")
+		#calling server_list_fun
+		server_list_fun $SILO
+                
+		for i in $(echo $s_list_new| sed "s/|/ /g")
                 do
-                        #echo -e "server name : $i"
+                        echo -e "server name : $i"
                         SCOUNT=`expr $SCOUNT + 1`
 
                 done
