@@ -80,7 +80,7 @@ BBW=$2
 # calling health check function
 #healthcheck $HNAME
 echo "Grepping $BBW process in $HNAME"
-echo ""ssh $HNAME "ps -eo pid,user,args --sort user | grep $BBW | grep bwengine | awk '{ print \\$1" "\\$7 }' | cut -d'/' -s '-f1,8,9' | tr '/' ' ' | sed -e "s/-/ /" -e "s/-/ /" | tr -s " ""
+echo ""ssh $HNAME "ps -eo pid,user,args --sort user | grep $BBW | grep bwengine | awk '{ print $1" "$7 }' | cut -d'/' -s '-f1,8,9' | tr '/' ' ' | sed -e "s/-/ /" -e "s/-/ /" | tr -s " ""
 
 }
 
@@ -140,7 +140,7 @@ if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] && [[  -z "$COUNT
                 do
                         echo "======================================================"
                         bounce_instance $i $BW
-#                        echo -e "server name : $i"
+                        echo -e "server name : $i"
                         echo "======================================================"
                 done
 
