@@ -55,12 +55,20 @@ echo -e "$GREEN $0 -h $NC"
 
 ## Initiall healthcheck before bounceing BW
 
-#healthcheck()
-#{
+healthcheck()
+{
+
+# Variable declaration
+local HNAME=$1
 #  ssh to the respective instance and run  dupcheck command and store some where to verify later
-#   check health status of Hawk agent
-#   check permission of ASI files
-#}
+echo "ssh $HNAME "run dupcheck command to verify health status of BW" "
+
+#   check health status of Hawk agent and store the value in variable
+echo "ssh $HNAME "command to check health status of Hawk process "  "
+#   check permission of ASI files for respective BW and store it in variable
+echo "ssh $HNAME "command to check permiss of ASI file""
+
+}
 
 ## Bounce all instance in Silo function
 
@@ -78,9 +86,13 @@ bounce_instance()
 HNAME=$1
 BBW=$2
 # calling health check function
-#healthcheck $HNAME
+healthcheck $HNAME
 echo "Grepping $BBW process in $HNAME"
 echo ""ssh $HNAME "ps -eo pid,user,args --sort user | grep $BBW | grep bwengine | awk '{ print \\$1" "\\$7 }' | cut -d'/' -s '-f1,8,9' | tr '/' ' ' | sed -e "s/-/ /" -e "s/-/ /" | tr -s " ""
+echo "killing BW process : kill -9 \$PID"
+echo "ssh $HNAME "kill -9 \$PID""
+echo "\$? based on the exit value of previous command display success message"
+
 
 }
 
