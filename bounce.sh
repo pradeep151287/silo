@@ -101,7 +101,7 @@ echo ""ssh $HNAME "ps -eo pid,user,args --sort user | grep $BBW | grep bwengine 
 echo "killing BW process : kill -9 \$PID"
 echo "ssh $HNAME "kill -9 \$PID""
 echo "\$? based on the exit value of previous command display success message"
-sleep 5 
+sleep 5
 echo "do post health verification with dupcheck "
 
 }
@@ -141,48 +141,45 @@ BW name: $BW
 role base count: $COUNT_VAR
 ALL: $ALL"
 
-
-echo "checking condition for all instance"
-if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] 
-      then
-       # calling server_list_fun
-	server_list_fun $SILO
-
-	if [ -z "$s_list" ]
-	then
-		echo "SILO not Found"
-		exit
-	fi
-
-        echo "Bouncing below instance"
-	echo "${s_list[*]}"
-	echo -e "\n"
-	s_list_new=${s_list[*]}
-
-        for i in $(echo $s_list_new| sed "s/|/ /g")
-                do
-                        echo "======================================================"
-                        bounce_instance $i $BW
-#                        echo -e "server name : $i"
-                        echo "======================================================"
-                done
-
-
 echo "checking role based condition"
-
 
 elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ -z "$ALL" ]] && [[ ! -z "$COUNT_VAR" ]]
       then
 
 		#calling server_list_fun
 		server_list_fun $SILO
-                
+
 		for i in $(echo $s_list_new| sed "s/|/ /g")
                 do
                         echo -e "server name : $i"
                         SCOUNT=`expr $SCOUNT + 1`
 
                 done
+
+echo "checking condition for all instance"
+    if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] && [[  -z "$COUNT_VAR" ]]
+            then
+                 # calling server_list_fun
+                	server_list_fun $SILO
+
+                	if [ -z "$s_list" ]
+                	then
+                		echo "SILO not Found"
+                		exit
+                	fi
+
+                  echo "Bouncing below instance"
+                	echo "${s_list[*]}"
+                	echo -e "\n"
+                	s_list_new=${s_list[*]}
+
+                        for i in $(echo $s_list_new| sed "s/|/ /g")
+                                do
+                                        echo "======================================================"
+                                        bounce_instance $i $BW
+                #                        echo -e "server name : $i"
+                                        echo "======================================================"
+                                done
 
 elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "ALL" ]] && [[ ! -z "COUNT_VAR" ]]
       then
