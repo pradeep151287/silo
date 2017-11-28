@@ -16,7 +16,7 @@ server_list_fun()
 {
   OLDIFS=$IFS
   IFS=","
- local  COUNT=1
+  local  COUNT=1
   I=1
   SNAME=$1
 
@@ -143,32 +143,30 @@ done
 #role base count: $COUNT
 #ALL: $ALL"
 
-#role based function 
+#role based function
 if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$COUNT_VAR" ]] && [[ -z "$ALL" ]]
       then
 
 	if [[  $COUNT -gt 0 ]];  then
 
-                 # calling server_list_fun
-                        server_list_fun $SILO
+      # calling server_list_fun
+      server_list_fun $SILO
+      if [ -z "$slist" ]
+          then
+          echo "SILO not Found"
+          exit
+      fi
 
-                        if [ -z "$slist" ]
-                        then
-                                echo "SILO not Found"
-                                exit
-                        fi
+      echo "${slist[*]}"
+      slist_new=${slist[*]}
 
-		
-                        echo "${slist[*]}"
-                        slist_new=${slist[*]}
+      for i in $(echo $slist_new| sed "s/|/ /g")
+          do
+         # echo -e "server name : $i"
+          SCOUNT=`expr $SCOUNT + 1`
+      done
 
-		for i in $(echo $slist_new| sed "s/|/ /g")
-                do
-#                       # echo -e "server name : $i"
-                        SCOUNT=`expr $SCOUNT + 1`
-                done
-
-		echo "count: $COUNT SCOUNT: $SCOUNT " 
+		echo "count: $COUNT SCOUNT: $SCOUNT "
 		if [ ! "$COUNT" -ge "$SCOUNT" ]; then
 			echo "calling expr function"
 			NSER=`expr $SCOUNT / $COUNT`
@@ -177,50 +175,45 @@ if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$COUNT_VAR" ]] && [[ -z "$
 			echo "Total number of Batche's : $FNSER"
 
 			if [ $FNSER == 1 ]
-			then 
-			read -p "with given Role based option its like, Running kill BW on instances at one batch : Do you want to process [Y/N] " prompt
-			if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
-			then 
-									
-			ITE=1
-			l=1
-			while [ $ITE -lt $SCOUNT ]
-	 	        do
-				
-				for ((i=1;i<=$FNSER;i++)) 
-				do 
-					N=${csv[$l]}
-					#echo $N
-					if [ ! -z $N ]
-					then
-						echo "server: ${csv[$l]}"
-					#	bounce_instance $N $BW
-						let "l += 1"
-						let "ITE += 1"
-					fi						
-				done
-				if [ $ITE -gt $SCOUNT ]
-				then
-                                     exit
-                                fi
+			   then
+			      read -p "with given Role based option its like, Running kill BW on instances at one batch : Do you want to process [Y/N] " prompt
+			         if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]
+			            then
 
-				echo "starting next batch" 
-				sleep 10 
-			done
+			               ITE=1
+			               l=1
+			                  while [ $ITE -lt $SCOUNT ]
+	 	                         do
+								                       for ((i=1;i<=$FNSER;i++))
+				                                   do
+					                                      N=${csv[$l]}
+										                                      if [ ! -z $N ]
+					                                                     then
+						                                                           echo "server: ${csv[$l]}"
+					                                                                  #	bounce_instance $N $BW
+						                                                           let "l += 1"
+						                                                           let "ITE += 1"
+					                                                fi
+				                                   done
+				                                   if [ $ITE -gt $SCOUNT ]
+				                                       then
+                                                 exit
+                                          fi
+				                             echo "starting next batch"
+				                             sleep 10
+			                      done
 
-			else
-				echo -e "Quit "
-				exit
-					
-			fi
+			       else
+				           echo -e "Quit "
+				               exit
+      			fi
 
 			else
-			  ITE=1
-                        l=1
-                        while [ $ITE -lt $SCOUNT ]
-                        do
-
-                                for ((i=1;i<=$FNSER;i++))
+			       ITE=1
+             l=1
+                while [ $ITE -lt $SCOUNT ]
+                   do
+                      for ((i=1;i<=$FNSER;i++))
                                 do
                                         N=${csv[$l]}
                                         #echo $N
@@ -231,7 +224,7 @@ if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$COUNT_VAR" ]] && [[ -z "$
                                                 let "l += 1"
                                                 let "ITE += 1"
                                         fi
-                                done
+                               done
                                 if [ $ITE -gt $SCOUNT ]
                                 then
                                      exit
@@ -241,18 +234,18 @@ if [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$COUNT_VAR" ]] && [[ -z "$
                                 sleep 10
                         done
 			fi
-		
+
 		else
 			echo -e "$RED Role based argument passed is greter then total number of servers $NC"
 		fi
 
-	else 
-		echo -e "$RED Argument passed with "-r" option is non integer or negetive value 
+	else
+		echo -e "$RED Argument passed with "-r" option is non integer or negetive value
  pass the valid intiger value 	$NC"
-	fi	
-		
+	fi
 
-    
+
+
 elif [[ ! -z "$SILO" ]] && [[ ! -z "$BW" ]] && [[ ! -z "$ALL" ]] && [[  -z "$COUNT_VAR" ]]
             then
                  # calling server_list_fun
